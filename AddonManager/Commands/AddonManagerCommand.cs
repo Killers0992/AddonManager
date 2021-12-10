@@ -30,7 +30,11 @@ namespace AddonManager.Commands
                     Environment.NewLine,
                     "- AM uninstall <name>",
                     Environment.NewLine,
+                    "- AM reload <name>",
+                    Environment.NewLine,
                     "- AM setservername <name>",
+                    Environment.NewLine,
+                    "- AM linkedservers",
                     Environment.NewLine,
                     "- AM list"), "AM");
                 return;
@@ -109,6 +113,32 @@ namespace AddonManager.Commands
                         player.SendRAMessage($"Addon \"{name}\" uninstalled!", "AM");
                     }
                     break;
+                case "RELOAD":
+                    {
+                        if (arguments.Length < 2)
+                        {
+                            player.SendRAMessage("Syntax: AM reload <addonName>", "AM");
+                            return;
+                        }
+                        var name = arguments[1].Replace(" ", "-").ToUpper();
+                        var addon = NPManager.Singleton.DedicatedAddonHandlers.Values.FirstOrDefault(p => p.DefaultAddon.AddonName.Replace(" ", "-").ToUpper() == name);
+                        if (addon == null)
+                        {
+                            player.SendRAMessage($"Addon \"{name}\" not exists!", "AM");
+                            return;
+                        }
+
+                        if (!player.Server.ServerConfig.InstalledAddons.Contains(addon.DefaultAddon.AddonId))
+                        {
+                            player.SendRAMessage($"Addon \"{name}\" is not installed!", "AM");
+                            return;
+                        }
+
+                        player.Server.UnloadAddon(addon.DefaultAddon.AddonId);
+                        player.Server.LoadAddon(addon.DefaultAddon.AddonId);
+                        player.SendRAMessage($"Addon \"{name}\" reloaded!", "AM");
+                    }
+                    break;
                 case "LIST":
                     {
                         List<string> addons = new List<string>();
@@ -121,6 +151,21 @@ namespace AddonManager.Commands
                             str += "\n  - No addons avaliable.";
                         else
                             str += $"\n{string.Join("\n", addons)}";
+                        player.SendRAMessage(str, "AM");
+                    }
+                    break;
+                case "LINKEDSERVERS":
+                    {
+                        List<string> servers = new List<string>();
+                        foreach (var server in NPManager.Singleton.Servers.Values.Where(p => p.ServerConfig.LinkToken == player.Server.ServerConfig.LinkToken))
+                        {
+                            servers.Add($" - {server.ServerName} ({server.FullAddress})");
+                        }
+                        string str = "Addon Manager | Linked servers:";
+                        if (servers.Count == 0)
+                            str += "\n  - No servers linked.";
+                        else
+                            str += $"\n{string.Join("\n", servers)}";
                         player.SendRAMessage(str, "AM");
                     }
                     break;
@@ -153,7 +198,11 @@ namespace AddonManager.Commands
                         Environment.NewLine,
                         "- AM uninstall <name>",
                         Environment.NewLine,
+                        "- AM reload <name>",
+                        Environment.NewLine,
                         "- AM setservername <name>",
+                        Environment.NewLine,
+                        "- AM linkedservers",
                         Environment.NewLine,
                         "- AM list"), "AM");
                     break;

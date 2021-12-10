@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Mirror, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\NetworkedPlugins\Build\Dedicated App\DedicatedApp-Linux\Mirror.dll</HintPath>
+    </Reference>
     <Reference Include="NetworkedPlugins.API">
       <HintPath>..\..\..\..\Documents\VS Projects\NetworkedPlugins\Build\Exiled Plugin\dependencies\NetworkedPlugins.API.dll</HintPath>
     </Reference>

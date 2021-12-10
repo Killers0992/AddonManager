@@ -30,6 +30,8 @@ namespace AddonManager.Commands
                     Environment.NewLine,
                     "- AM uninstall <name>",
                     Environment.NewLine,
+                    "- AM setservername <name>",
+                    Environment.NewLine,
                     "- AM list"), "AM");
                 return;
             }
@@ -87,7 +89,7 @@ namespace AddonManager.Commands
                             player.SendRAMessage("Syntax: AM uninstall <addonName>", "AM");
                             return;
                         }
-                        var name = arguments[1].Replace(" ", "-").ToUpper();
+                        var name = arguments[1].Replace(" ", "-").ToUpper().Replace("ADDONMANAGER", "");
                         var addon = NPManager.Singleton.DedicatedAddonHandlers.Values.FirstOrDefault(p => p.DefaultAddon.AddonName.Replace(" ", "-").ToUpper() == name);
                         if (addon == null)
                         {
@@ -100,7 +102,6 @@ namespace AddonManager.Commands
                             player.SendRAMessage($"Addon \"{name}\" is not installed!", "AM");
                             return;
                         }
-
 
                         player.Server.UnloadAddon(addon.DefaultAddon.AddonId);
                         player.Server.ServerConfig.InstalledAddons.Remove(addon.DefaultAddon.AddonId);
@@ -123,14 +124,36 @@ namespace AddonManager.Commands
                         player.SendRAMessage(str, "AM");
                     }
                     break;
+                case "SETSERVERNAME":
+                    {
+                        if (arguments.Length < 2)
+                        {
+                            player.SendRAMessage("Syntax: AM setservername <name>", "AM");
+                            return;
+                        }
+                        var name = string.Join(" ", arguments.Skip(1));
+
+                        if (name.Length > 20)
+                        {
+                            player.SendRAMessage("Servername cant be longer than 20 characters!", "AM");
+                            return;
+                        }
+
+                        player.Server.ServerConfig.ServerName = name;
+                        player.Server.SaveServerConfig();
+                        player.SendRAMessage($"Changed servername to \"{name}\".", "AM");
+                    }
+                    break;
                 default:
-                    player.SendRAMessage(string.Concat("Addon Manager | Commands:",
+                    player.SendRAMessage(string.Concat("Addon Manager:",
                         Environment.NewLine,
-                        " - AM installed",
+                        "- AM installed",
                         Environment.NewLine,
                         "- AM install <name>",
                         Environment.NewLine,
                         "- AM uninstall <name>",
+                        Environment.NewLine,
+                        "- AM setservername <name>",
                         Environment.NewLine,
                         "- AM list"), "AM");
                     break;

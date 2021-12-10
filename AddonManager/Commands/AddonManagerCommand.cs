@@ -157,7 +157,7 @@ namespace AddonManager.Commands
                 case "LINKEDSERVERS":
                     {
                         List<string> servers = new List<string>();
-                        foreach (var server in NPManager.Singleton.Servers.Values.Where(p => p.ServerConfig.LinkToken == player.Server.ServerConfig.LinkToken))
+                        foreach (var server in NPManager.Singleton.Servers.Values.Where(p => p.ServerConfig.LinkToken == player.Server.ServerConfig.LinkToken).OrderBy(p => p.ServerPort))
                         {
                             servers.Add($" - {server.ServerName} ({server.FullAddress})");
                         }

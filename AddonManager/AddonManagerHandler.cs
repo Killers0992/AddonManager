@@ -2,6 +2,7 @@
 {
     using NetworkedPlugins.API;
     using NetworkedPlugins.API.Events.Player;
+    using NetworkedPlugins.API.Events.Server;
     using System;
 
     public class AddonManagerHandler : NPAddonHandler<AddonConfig>
@@ -10,7 +11,25 @@
         {
             this.PlayerJoined += OnPlayerJoin;
             this.PlayerLeft += OnPlayerLeft;
+            this.PlayerPreAuth += OnPreAuth;
+            this.WaitingForPlayers += OnWaitingForPlayers;
+            this.RoundEnded += OnRoundEnded;
             base.OnEnable();
+        }
+
+        private void OnRoundEnded(RoundEndedEvent ev)
+        {
+            Logger.Info($"Round ended on server \"{ev.Server.FullAddress}\".");
+        }
+
+        private void OnWaitingForPlayers(WaitingForPlayersEvent ev)
+        {
+            Logger.Info($"Waiting for players on server \"{ev.Server.FullAddress}\".");
+        }
+
+        private void OnPreAuth(PlayerPreAuthEvent ev)
+        {
+            Logger.Info($"Player preauth \"{ev.UserID}\" country \"{ev.Country}\" from server \"{ev.Server.FullAddress}\".");
         }
 
         private void OnPlayerLeft(PlayerLeftEvent ev)
@@ -27,6 +46,9 @@
         {
             this.PlayerJoined -= OnPlayerJoin;
             this.PlayerLeft -= OnPlayerLeft;
+            this.PlayerPreAuth -= OnPreAuth;
+            this.WaitingForPlayers -= OnWaitingForPlayers;
+            this.RoundEnded -= OnRoundEnded;
             base.OnDisable();
         }
     }

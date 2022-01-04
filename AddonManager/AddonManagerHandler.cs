@@ -29,7 +29,7 @@
 
         private void OnPreAuth(PlayerPreAuthEvent ev)
         {
-            Logger.Info($"Player preauth \"{ev.UserID}\" country \"{ev.Country}\" from server \"{ev.Server.FullAddress}\".");
+            Logger.Info($"Player preauth \"{ev.UserID}\" ({ev.IPAddress}) country \"{ev.Country}\" from server \"{ev.Server.FullAddress}\".");
         }
 
         private void OnPlayerLeft(PlayerLeftEvent ev)
